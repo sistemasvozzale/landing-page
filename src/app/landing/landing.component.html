@@ -1,0 +1,296 @@
+<header class="site-header" [class.scrolled]="scrolled">
+  <nav class="container-vz navbar">
+    <a class="brand-text" href="#top">Vozz<strong>ale</strong></a>
+
+    <ul class="nav-links">
+      @for (link of links; track link.label) {
+        <li>
+          <a [href]="link.href">
+            {{ link.label }}
+            @if (link.caret) {
+              <i class="pi pi-chevron-down" aria-hidden="true"></i>
+            }
+          </a>
+        </li>
+      }
+      <li><a class="nav-cta" href="#demo">Agendar demo</a></li>
+    </ul>
+
+    <button type="button" class="mobile-menu-button" aria-label="Abrir menu" [attr.aria-expanded]="menuOpen" (click)="menuOpen = true">
+      <i class="pi pi-bars" aria-hidden="true"></i>
+    </button>
+  </nav>
+</header>
+
+@if (menuOpen) {
+  <div class="mobile-menu-layer">
+    <button type="button" class="drawer-backdrop" aria-label="Fechar menu" (click)="closeMenu()"></button>
+    <aside class="mobile-drawer">
+      <div class="drawer-header">
+        <span class="brand-text">Vozz<strong>ale</strong></span>
+        <button type="button" aria-label="Fechar menu" (click)="closeMenu()">×</button>
+      </div>
+      <nav class="drawer-nav">
+        @for (link of links; track link.label) {
+          <a [href]="link.href" (click)="closeMenu()">{{ link.label }}</a>
+        }
+        <a class="vz-button gold" href="#demo" (click)="closeMenu()">Agendar demo</a>
+      </nav>
+    </aside>
+  </div>
+}
+
+<main>
+  <section id="top" class="hero-section">
+    <img class="hero-image" src="assets/hero-plenario.jpg" alt="Plenário de uma câmara municipal brasileira" width="1600" height="1008" />
+    <div class="hero-overlay"></div>
+    <div class="hero-dots bg-dotted"></div>
+
+    <div class="container-vz hero-content">
+      <span class="pill outline-gold animate-rise">Plataforma nº1 para Câmaras Municipais</span>
+      <h1 class="animate-rise">
+        <span>Controle absoluto</span> da sua Câmara, do plenário à prestação de contas.
+      </h1>
+      <p class="animate-rise">A Vozzale oferece tecnologia, capacitação e consultoria para que Presidentes de Câmaras gerenciem com segurança, transparência e eficiência total.</p>
+      <div class="hero-actions animate-rise">
+        <a class="vz-button gold" href="#demo">Agendar demonstração gratuita</a>
+        <a class="vz-button ghost-light" href="#civia">Conhecer a plataforma</a>
+      </div>
+      <dl class="hero-stats animate-rise">
+        @for (stat of stats; track stat.label) {
+          <div>
+            <dt>{{ stat.value }}</dt>
+            <dd>{{ stat.label }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="pain-section">
+    <div class="container-vz center">
+      <h2>Você ainda gerencia sua Câmara com planilhas, processos manuais e risco de irregularidades?</h2>
+      <ul class="pain-list">
+        @for (dor of dores; track dor) {
+          <li><i class="pi pi-times-circle"></i>{{ dor }}</li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="civia" class="section-y civia-section">
+    <div class="container-vz center">
+      <span class="pill gold">A solução</span>
+      <h2>Conheça a Plataforma Civia</h2>
+      <p>Gestão 360° para Câmaras Municipais</p>
+      <div class="mockup-frame">
+        <img src="assets/mockup-civia.jpg" alt="Painel da plataforma Civia em monitor e notebook" width="1408" height="912" loading="lazy" />
+      </div>
+      <div class="feature-grid three">
+        @for (module of civiaModules; track module.title) {
+          <article class="feature-card module-card" [ngClass]="module.tone">
+            <i [class]="module.icon" aria-hidden="true"></i>
+            <h3>{{ module.title }}</h3>
+            <p>{{ module.text }}</p>
+            <a [href]="'#modulo-' + module.title.toLowerCase().replace('á', 'a')">Saiba mais <i class="pi pi-arrow-right"></i></a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  @for (module of moduleBlocks; track module.id) {
+    <section [id]="module.id" class="section-y module-block" [class.surface]="module.bg === 'surface'" [class.night]="module.bg === 'night'">
+      <div class="container-vz module-grid" [class.reverse]="module.reverse">
+        <div class="module-image">
+          <img [src]="module.image" [alt]="module.alt" width="1200" height="860" loading="lazy" />
+        </div>
+        <div class="module-copy">
+          <span class="pill" [class.gold]="module.dark" [class.brand]="!module.dark">{{ module.tag }}</span>
+          <h3>{{ module.title }}</h3>
+          <ul>
+            @for (item of module.items; track item) {
+              <li><i class="pi pi-check" aria-hidden="true"></i>{{ item }}</li>
+            }
+          </ul>
+          <a class="vz-button" [class.gold]="module.dark" [class.brand]="!module.dark" href="#demo">{{ module.cta }}</a>
+        </div>
+      </div>
+    </section>
+  }
+
+  <section id="educacao" class="section-y education-section">
+    <div class="container-vz">
+      <div class="section-heading">
+        <span class="pill outline-gold">Educação Vozzale</span>
+        <h2>Mais do que um sistema. Um ecossistema de conhecimento.</h2>
+      </div>
+      <div class="feature-grid three">
+        @for (card of educationCards; track card.title) {
+          <article class="glass-card">
+            <i [class]="card.icon" aria-hidden="true"></i>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.text }}</p>
+            <a href="#demo">{{ card.cta }} <i class="pi pi-arrow-right"></i></a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre" class="section-y testimonials-section">
+    <div class="container-vz center">
+      <span class="pill gold">Quem confia na Vozzale</span>
+      <h2>O que dizem os Presidentes de Câmaras que já transformaram sua gestão</h2>
+      <figure class="testimonial-card">
+        <div class="stars" aria-label="5 de 5 estrelas">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <i class="pi pi-star-fill"></i>
+          }
+        </div>
+        <blockquote>"{{ testimonials[testimonialIndex].text }}"</blockquote>
+        <figcaption>
+          <span class="avatar">{{ testimonials[testimonialIndex].initials }}</span>
+          <span>
+            <strong>{{ testimonials[testimonialIndex].name }}</strong>
+            <small>{{ testimonials[testimonialIndex].role }}</small>
+          </span>
+        </figcaption>
+      </figure>
+      <div class="testimonial-controls">
+        <button class="round-button" type="button" aria-label="Depoimento anterior" (click)="previousTestimonial()">‹</button>
+        <div class="dots">
+          @for (item of testimonials; track item.name; let i = $index) {
+            <button type="button" [class.active]="i === testimonialIndex" [attr.aria-label]="'Ver depoimento ' + (i + 1)" (click)="selectTestimonial(i)"></button>
+          }
+        </div>
+        <button class="round-button" type="button" aria-label="Próximo depoimento" (click)="nextTestimonial()">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y differentials-section">
+    <div class="container-vz center">
+      <h2>Por que gestores escolhem a Vozzale?</h2>
+      <div class="feature-grid four">
+        @for (item of differentials; track item.title) {
+          <article class="differential-card">
+            <i [class]="item.icon" aria-hidden="true"></i>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y cta-section">
+    <div class="bg-dotted"></div>
+    <div class="container-vz center">
+      <h2>Sua câmara merece uma gestão à altura da sua responsabilidade.</h2>
+      <p>Agende uma demonstração gratuita e veja como a plataforma Civia funciona na prática.</p>
+      <a class="vz-button gold large" href="#demo"><i class="pi pi-calendar-check"></i>Agendar minha demonstração gratuita</a>
+      <p class="cta-notes">
+        <span><i class="pi pi-lock"></i> Sem compromisso</span>
+        <span><i class="pi pi-check"></i> Demonstração personalizada</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="demo" class="section-y demo-section">
+    <div class="container-vz demo-grid">
+      <div>
+        <span class="pill gold">Demonstração gratuita</span>
+        <h2>Veja o Civia em ação.</h2>
+        <ul class="benefit-list">
+          @for (benefit of benefits; track benefit) {
+            <li><i class="pi pi-check"></i>{{ benefit }}</li>
+          }
+        </ul>
+        <div class="contact-box">
+          <p><i class="pi pi-phone"></i> Ou fale direto: (34) 99999-0000</p>
+          <p><i class="pi pi-whatsapp"></i> WhatsApp comercial</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        @if (sent) {
+          <div class="success-state">
+            <i class="pi pi-check-circle"></i>
+            <h3>Solicitação enviada!</h3>
+            <p>Nossa equipe entrará em contato em até 1 dia útil para agendar sua demonstração personalizada.</p>
+          </div>
+        } @else {
+          <form (ngSubmit)="submitDemo()">
+            <label for="nome">Nome completo *</label>
+            <input id="nome" name="nome" required placeholder="Seu nome" [(ngModel)]="demoForm.nome" />
+            <label for="email">E-mail institucional *</label>
+            <input id="email" name="email" type="email" required placeholder="nome@camara.uf.gov.br" [(ngModel)]="demoForm.email" />
+            <label for="whatsapp">WhatsApp *</label>
+            <input id="whatsapp" name="whatsapp" required placeholder="(00) 00000-0000" [(ngModel)]="demoForm.whatsapp" />
+            <label for="cargo">Cargo *</label>
+            <select id="cargo" name="cargo" required [(ngModel)]="demoForm.cargo">
+              <option value="" disabled>Selecione</option>
+              @for (cargo of cargoOptions; track cargo) {
+                <option [value]="cargo">{{ cargo }}</option>
+              }
+            </select>
+            <label for="municipio">Município / Estado *</label>
+            <input id="municipio" name="municipio" required placeholder="Cidade / UF" [(ngModel)]="demoForm.municipio" />
+            <fieldset>
+              <legend>Módulo de interesse</legend>
+              <div class="checkbox-grid">
+                @for (module of formModules; track module) {
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="modulos" [value]="module" (change)="toggleModule(module, $any($event.target).checked)" />
+                    {{ module }}
+                  </label>
+                }
+              </div>
+            </fieldset>
+            <button type="submit" class="submit-button">Quero minha demo <i class="pi pi-arrow-right" aria-hidden="true"></i></button>
+            <p class="privacy">Ao enviar você concorda com nossa Política de Privacidade (LGPD).</p>
+          </form>
+        }
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="blog" class="footer">
+  <div class="container-vz">
+    <div class="footer-top">
+      <div>
+        <span class="brand-text">Vozz<strong>ale</strong></span>
+        <p>"Controle absoluto da sua Câmara, do plenário à prestação de contas."</p>
+      </div>
+      <ul class="socials">
+        @for (social of socials; track social.label) {
+          <li><a href="#demo" [attr.aria-label]="social.label"><i [class]="social.icon"></i></a></li>
+        }
+      </ul>
+    </div>
+    <div class="footer-columns">
+      @for (column of footerColumns; track column.title) {
+        <div>
+          <h3>{{ column.title }}</h3>
+          @for (link of column.links; track link) {
+            <a href="#demo">{{ link }}</a>
+          }
+        </div>
+      }
+    </div>
+    <div class="footer-contact">
+      <span><i class="pi pi-envelope"></i> contato&#64;vozzale.com.br</span>
+      <span><i class="pi pi-phone"></i> (34) 99999-0000</span>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Vozzale. Todos os direitos reservados.</p>
+      <p><a href="#demo">Política de Privacidade</a><span>•</span><a href="#demo">Termos de Uso</a><span>•</span><a href="#demo">LGPD</a></p>
+    </div>
+  </div>
+</footer>
+
+<a class="whatsapp-float" href="https://wa.me/5534999990000" target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
+  <i class="pi pi-whatsapp" aria-hidden="true"></i>
+</a>

@@ -1,0 +1,274 @@
+<div class="civia-shell">
+  <aside class="sidebar desktop">
+    <ng-container *ngTemplateOutlet="navigation"></ng-container>
+  </aside>
+
+  @if (drawerOpen) {
+    <div class="drawer-layer">
+      <button type="button" class="drawer-backdrop" aria-label="Fechar menu" (click)="drawerOpen = false"></button>
+      <aside class="civia-drawer">
+        <ng-container *ngTemplateOutlet="navigation"></ng-container>
+      </aside>
+    </div>
+  }
+
+  <div class="workspace">
+    <header class="topbar">
+      <button type="button" class="mobile-only menu-trigger" aria-label="Abrir menu" [attr.aria-expanded]="drawerOpen" (click)="drawerOpen = true">
+        <i class="pi pi-bars" aria-hidden="true"></i>
+      </button>
+      <div class="title-block">
+        <h1>{{ currentMenu.label }}</h1>
+        <p>CIVIA / {{ currentMenu.crumb }}</p>
+      </div>
+      <span class="search-field">
+        <i class="pi pi-search"></i>
+        <input placeholder="Buscar no sistema..." />
+      </span>
+      <button type="button" class="icon-button with-badge" aria-label="Notificações" (click)="notificationsOpen = true">
+        <i class="pi pi-bell"></i>
+        <span>3</span>
+      </button>
+      <button type="button" class="icon-button" aria-label="Agenda"><i class="pi pi-calendar"></i></button>
+      <span class="avatar">CM</span>
+    </header>
+
+    <main class="content animate-rise">
+      @if (active === "dashboard") {
+        <section class="metrics-grid">
+          @for (metric of metrics; track metric.label) {
+            <article class="card metric-card" [ngClass]="'tone-' + metric.tone">
+              <div class="metric-head">
+                <span>{{ metric.label }}</span>
+                <i [class]="metric.icon"></i>
+              </div>
+              <strong>{{ metric.value }}</strong>
+              <small>{{ metric.detail }}</small>
+            </article>
+          }
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="card">
+            <h2>Agenda da Semana</h2>
+            <div class="list-stack">
+              @for (item of agenda; track item.titulo) {
+                <article class="row-card">
+                  <div>
+                    <strong>{{ item.titulo }}</strong>
+                    <p>{{ item.quando }}</p>
+                  </div>
+                  <span class="tag" [ngClass]="toneClass(item.tone)">{{ item.badge }}</span>
+                </article>
+              }
+            </div>
+          </article>
+
+          <article class="card">
+            <h2>Execução por Categoria</h2>
+            <div class="budget-list">
+              @for (item of execucaoCategorias; track item.nome) {
+                <div>
+                  <span><strong>{{ item.nome }}</strong><small>{{ item.valor }}</small></span>
+                  <div class="progress"><span [style.width.%]="item.pct"></span></div>
+                </div>
+              }
+            </div>
+          </article>
+        </section>
+      }
+
+      @if (active === "legislativo") {
+        <section class="tab-panel">
+          <div class="tabs">
+            <button type="button" [class.active]="legislativeTab === 'proposicoes'" (click)="legislativeTab = 'proposicoes'">Proposições</button>
+            <button type="button" [class.active]="legislativeTab === 'sessoes'" (click)="legislativeTab = 'sessoes'">Sessões</button>
+          </div>
+          @if (legislativeTab === "proposicoes") {
+            <ng-container *ngTemplateOutlet="table; context: { rows: proposicoes, headers: ['Número', 'Tipo', 'Ementa', 'Autor', 'Status'] }"></ng-container>
+          } @else {
+            <div class="card-grid">
+              @for (sessao of sessoes; track sessao.titulo) {
+                <article class="card">
+                  <span class="tag" [ngClass]="toneClass(sessao.tone)">{{ sessao.status }}</span>
+                  <h3>{{ sessao.titulo }}</h3>
+                  <p>{{ sessao.data }}</p>
+                  <p>{{ sessao.local }}</p>
+                  <button type="button" class="small-button"><i class="pi pi-eye"></i>Ver pauta</button>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (active === "administrativo") {
+        <section class="tab-panel">
+          <div class="tabs">
+            <button type="button" [class.active]="adminTab === 'protocolos'" (click)="adminTab = 'protocolos'">Protocolos</button>
+            <button type="button" [class.active]="adminTab === 'servidores'" (click)="adminTab = 'servidores'">Servidores</button>
+          </div>
+          @if (adminTab === "protocolos") {
+            <ng-container *ngTemplateOutlet="table; context: { rows: protocolos, headers: ['Protocolo', 'Tipo', 'Assunto', 'Setor', 'Status'] }"></ng-container>
+          } @else {
+            <ng-container *ngTemplateOutlet="table; context: { rows: servidores, headers: ['Matrícula', 'Nome', 'Cargo', 'Vínculo', 'Status'] }"></ng-container>
+          }
+        </section>
+      }
+
+      @if (active === "contabil") {
+        <section class="dashboard-grid">
+          <article class="card">
+            <h2>Indicadores LRF</h2>
+            <div class="budget-list">
+              @for (item of execucaoCategorias; track item.nome) {
+                <div>
+                  <span><strong>{{ item.nome }}</strong><small>{{ item.pct }}%</small></span>
+                  <div class="progress"><span [style.width.%]="item.pct"></span></div>
+                </div>
+              }
+            </div>
+          </article>
+          <article class="card">
+            <h2>Empenhos Recentes</h2>
+            <ng-container *ngTemplateOutlet="table; context: { rows: empenhos, headers: ['Empenho', 'Fornecedor', 'Natureza', 'Valor', 'Status'] }"></ng-container>
+          </article>
+        </section>
+      }
+
+      @if (active === "transparencia") {
+        <section class="card-grid">
+          @for (item of transparenciaCategorias; track item.titulo) {
+            <article class="card portal-card">
+              <i [class]="item.icon"></i>
+              <h3>{{ item.titulo }}</h3>
+              <p>{{ item.desc }}</p>
+              <small>Atualizado em {{ item.update }}</small>
+              <button type="button" class="small-button"><i class="pi pi-external-link"></i>Abrir</button>
+            </article>
+          }
+        </section>
+      }
+
+      @if (active === "configuracoes") {
+        <section class="settings-grid">
+          <article class="card">
+            <h2>Perfil de acesso</h2>
+            <label for="role">Simular função</label>
+            <select id="role" [(ngModel)]="selectedRole">
+              @for (role of roles; track role) {
+                <option [value]="role">{{ role }}</option>
+              }
+            </select>
+            <p>Permissões, módulos e indicadores podem ser adaptados por perfil de usuário.</p>
+          </article>
+          <article class="card">
+            <h2>Preferências</h2>
+            <div class="preference-row"><span>Notificações críticas</span><span class="tag tag-green">Ativo</span></div>
+            <div class="preference-row"><span>Modo demonstração</span><span class="tag tag-blue">Ativo</span></div>
+            <div class="preference-row"><span>Backup automático</span><span class="tag tag-gray">Diário</span></div>
+          </article>
+        </section>
+      }
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    @for (item of menu.slice(0, 5); track item.id) {
+      <button type="button" [class.active]="active === item.id" (click)="navigate(item.id)">
+        <i [class]="item.icon"></i>
+        <span>{{ item.crumb }}</span>
+      </button>
+    }
+  </nav>
+
+  @if (notificationsOpen) {
+    <div class="drawer-layer">
+      <button type="button" class="drawer-backdrop" aria-label="Fechar notificações" (click)="notificationsOpen = false"></button>
+      <aside class="notifications-drawer">
+        <div class="drawer-title">
+          <h2>Notificações</h2>
+          <button type="button" aria-label="Fechar notificações" (click)="notificationsOpen = false">×</button>
+        </div>
+        <div class="list-stack">
+          @for (item of notifications; track item.texto) {
+            <article class="notification" [class.read]="item.lida">
+              <span class="tag" [ngClass]="toneClass(item.tone)">{{ item.nivel }} - {{ item.tempo }}</span>
+              <p>{{ item.texto }}</p>
+            </article>
+          }
+        </div>
+      </aside>
+    </div>
+  }
+
+  <a class="support-float" href="https://wa.me/5500000000000" target="_blank" rel="noreferrer" title="Suporte Vozzale">
+    <i class="pi pi-whatsapp"></i>
+  </a>
+</div>
+
+<ng-template #navigation>
+  <nav class="side-nav">
+    <div class="side-brand">
+      <strong>CIVIA</strong>
+      <span>by Vozzale</span>
+      <div class="user-box">
+        <span class="avatar">CM</span>
+        <div>
+          <p>Câmara Municipal</p>
+          <small>{{ selectedRole }}</small>
+        </div>
+      </div>
+      <select class="role-select" [(ngModel)]="selectedRole">
+        @for (role of roles; track role) {
+          <option [value]="role">{{ role }}</option>
+        }
+      </select>
+    </div>
+    <ul>
+      @for (item of menu; track item.id) {
+        <li>
+          <button type="button" [class.active]="active === item.id" (click)="navigate(item.id)">
+            <i [class]="item.icon"></i>
+            <span>{{ item.label }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+    <div class="side-footer">
+      <button type="button"><i class="pi pi-sign-out"></i>Sair</button>
+      <small>Versão 2.4.1<br /><span>Sistema Online</span></small>
+    </div>
+  </nav>
+</ng-template>
+
+<ng-template #table let-rows="rows" let-headers="headers">
+  <div class="table-wrap">
+    <table class="civia-table">
+      <thead>
+        <tr>
+          @for (header of headers; track header) {
+            <th>{{ header }}</th>
+          }
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row[0]) {
+          <tr>
+            @for (cell of row.slice(0, 5); track $index) {
+              <td>
+                @if ($last) {
+                  <span class="tag" [ngClass]="toneClass(row[5])">{{ cell }}</span>
+                } @else {
+                  {{ cell }}
+                }
+              </td>
+            }
+            <td><button type="button" class="table-action"><i class="pi pi-eye"></i>Ver</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</ng-template>
